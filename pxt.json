@@ -1,0 +1,23 @@
+{
+    "name": "jacdac-huskylens",
+    "version": "1.9.32",
+    "description": "Huskylens",
+    "files": [
+        "constants.ts",
+        "client.ts",
+        "_locales/de/jacdac-character-screen-strings.json"
+    ],
+    "fileDependencies": {
+        "test.microbit.ts": "target:microbit || target:calliopemini"
+    },
+    "supportedTargets": [
+        "arcade",
+        "microbit",
+        "maker",
+        "calliopemini"
+    ],
+    "dependencies": {
+        "core": "*",
+        "jacdac": "github:microsoft/pxt-jacdac"
+    }
+}
