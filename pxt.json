@@ -4,8 +4,7 @@
     "description": "Forward Education's AI Vision extension, micro:bit V2 only.",
     "files": [
         "constants.ts",
-        "client.ts",
-        "_locales/de/jacdac-character-screen-strings.json"
+        "client.ts"
     ],
     "fileDependencies": {
         "test.microbit.ts": "target:microbit || target:calliopemini"
