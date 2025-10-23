@@ -2,6 +2,10 @@
     "name": "fwd-ai-vision",
     "version": "1.9.32",
     "description": "Forward Education's AI Vision extension, micro:bit V2 only.",
+    "dependencies": {
+        "core": "*",
+        "jacdac": "github:jacdac/pxt-jacdac#v1.9.40"
+    },
     "files": [
         "constants.ts",
         "client.ts"
@@ -9,14 +13,15 @@
     "fileDependencies": {
         "test.microbit.ts": "target:microbit || target:calliopemini"
     },
+    "targetVersions": {
+        "target": "8.0.17",
+        "targetId": "microbit"
+    },
     "supportedTargets": [
         "arcade",
         "microbit",
         "maker",
         "calliopemini"
     ],
-    "dependencies": {
-        "core": "*",
-        "jacdac": "github:microsoft/pxt-jacdac"
-    }
+    "preferredEditor": "tsprj"
 }

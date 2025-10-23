@@ -76,7 +76,7 @@ enum HUSKYLENSphoto{
     SCREENSHOT
 }
 
-//% weight=100  color=#e7660b icon="\uf083"  block="HuskyLens"
+//% weight=100  color=#e7660b icon="\uf083"  block="AI Vision"
 namespace modules {
 enum protocolCommand {
     COMMAND_REQUEST = 0x20,
@@ -165,6 +165,7 @@ export enum protocolAlgorithm {
         deviceAddress = HUSKYLENS_I2C_ADDR;
         while (!readKnock());
     }
+
     /**
      * HuskyLens change mode algorithm until success.
      */
@@ -174,6 +175,7 @@ export enum protocolAlgorithm {
         writeAlgorithm(mode, protocolCommand.COMMAND_REQUEST_ALGORITHM)
         while (!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * HuskyLens requests data and stores it in the result.
      */
@@ -184,6 +186,7 @@ export enum protocolAlgorithm {
         protocolWriteCommand(protocolCommand.COMMAND_REQUEST)
         processReturn();
     }
+
     /**
      * HuskyLens get the number of the learned ID from result.
      */
@@ -207,6 +210,7 @@ export enum protocolAlgorithm {
                 return false;
         }
     }
+
     /**
      * HuskyLens get the parameter of box near the screen center from result.
      */
@@ -232,6 +236,7 @@ export enum protocolAlgorithm {
         else hk_x = -1
         return hk_x;
     }
+
     /**
      * HuskyLens get the parameter of arrow near the screen center from result.
      */
@@ -256,6 +261,7 @@ export enum protocolAlgorithm {
         }else hk_x = -1
         return hk_x;
     }
+
     /**
      * The ID Huskylens got from result has been learned before?
      * @param id to id ,eg: 1
@@ -267,6 +273,7 @@ export enum protocolAlgorithm {
         if (id <= hk_x) return true;
         return false;
     }
+
     /**
      * The box or arrow corresponding to ID obtained by HuskyLens from result appears in screen？
      * @param id to id ,eg: 1
@@ -283,6 +290,7 @@ export enum protocolAlgorithm {
                 return false;
         }
     }
+
     /**
      * HuskyLens get the parameter of the box corresponding to ID from result.
      * @param id to id ,eg: 1
@@ -310,11 +318,11 @@ export enum protocolAlgorithm {
         else hk_x = -1;
         return hk_x;
     }
-     /**
+
+    /**
      * HuskyLens get the parameter of the arrow corresponding to ID from result.
      * @param id to id ,eg: 1
      */
-
     //%block="HuskyLens get $number1 of ID $id arrow from the result"
     //% weight=60
     export function readeArrow(id: number,number1: Content2): number {
@@ -341,13 +349,13 @@ export enum protocolAlgorithm {
         else hk_x = -1;
         return hk_x;
     }
+
     /**
      * HuskyLens get the box or arrow total number from result.
      * 
      */
     //%block="HuskyLens get a total number of %Ht total from the result"
     //% weight=90
-    //% advanced=true
     export function getBox(Ht: HUSKYLENSResultType_t): number {
         switch (Ht) {
             case 1:
@@ -358,13 +366,13 @@ export enum protocolAlgorithm {
                 return 0;
         }
     }
+
     /**
      * HuskyLens get the parameter of Nth box from result.
      * @param index to index ,eg: 1
      */
     //% block="HuskyLens get $data of the No. $index frame from the result"
     //% weight=60
-    //% advanced=true
     export function readBox_ss(index: number, data: Content3): number {
         let hk_x = -1
         let hk_i = index - 1
@@ -385,13 +393,13 @@ export enum protocolAlgorithm {
         return hk_x;
         
     }
+
     /**
      * HuskyLens get the parameter of the Nth arrow from result.
      * @param index to index ,eg: 1
     */
     //% block="HuskyLens get $data of the No. $index arrow from the result"
     //% weight=60
-    //% advanced=true
     export function readArrow_ss(index: number, data: Content4): number {
         let hk_x
         let hk_i = index - 1
@@ -412,13 +420,13 @@ export enum protocolAlgorithm {
         //protocolPtr[hk_i][0] = 0;
         return hk_x;
     }
+
     /**
      * HuskyLens get the total number of box or arrow from result.
      * @param id to id ,eg: 1
      */
     //%block="HuskyLens get a total number of ID %id %Ht total from the result"
     //% weight=55
-    //% advanced=true
     export function getBox_S(id: number, Ht: HUSKYLENSResultType_t): number {
         switch (Ht) {
             case 1:
@@ -429,6 +437,7 @@ export enum protocolAlgorithm {
                 return 0;
         }
     }
+
     /**
      * HuskyLens get the parameter of the Nth box corresponding to ID from result.
      * @param id to id ,eg: 1
@@ -436,7 +445,6 @@ export enum protocolAlgorithm {
      */
     //%block="HuskyLens get $number1 of the ID $id  No. $index frame from the result"
     //% weight=45
-    //% advanced=true
     export function readeBox_index(id: number, index: number, number1: Content1): number {
         let hk_y = cycle_block(id, index);
         let hk_x
@@ -460,6 +468,7 @@ export enum protocolAlgorithm {
         else hk_x = -1;
         return hk_x;
     }
+
     /**
      * HuskyLens get the parameter of the Nth arrow corresponding to ID from result.
      * @param id to id ,eg: 1
@@ -467,7 +476,6 @@ export enum protocolAlgorithm {
      */
     //%block="HuskyLens get $number1 of the ID $id No. $index arrow from the result"
     //% weight=35
-    //% advanced=true
     export function readeArrow_index(id: number, index: number, number1: Content2): number {
         let hk_y = cycle_arrow(id, index);
         let hk_x
@@ -491,27 +499,28 @@ export enum protocolAlgorithm {
         else hk_x = -1;
         return hk_x;
     }
+
     /**
      * Huskylens automatic learning ID
      * @param id to id ,eg: 1
      */
     //%block="HuskyLens learn ID %id once automatically"
     //% weight=30
-    //% advanced=true
     export function writeLearn1(id: number):void{
         writeAlgorithm(id, 0X36)
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * Huskylens forget all learning data of the current algorithm
      */
     //%block="HuskyLens forget all learning data of the current algorithm"
     //% weight=29
-    //% advanced=true
     export function forgetLearn():void{
         writeAlgorithm(0x47, 0X37)
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * Set ID name
      * @param id to id ,eg: 1
@@ -519,7 +528,6 @@ export enum protocolAlgorithm {
      */
     //%block="HuskyLens name ID %id of the current algorithm as %name"
     //% weight=28
-    //% advanced=true
     export function writeName(id:number,name:string):void{
         //do{
             let newname = name;
@@ -539,6 +547,7 @@ export enum protocolAlgorithm {
             protocolWrite(Buffer);
         //}while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * Display characters on the screen
      * @param name to name ,eg: "DFRobot"
@@ -547,7 +556,6 @@ export enum protocolAlgorithm {
      */
     //%block="HuskyLens show custom texts %name at position x %x y %y on screen"
     //% weight=27
-    //% advanced=true
     //% x.min=0 x.max=319
     //% y.min=0 y.max=210
     export function writeOSD(name:string, x:number, y:number):void{
@@ -574,22 +582,22 @@ export enum protocolAlgorithm {
             protocolWrite(Buffer);
         //}while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * HuskyLens clear characters in the screen
      */
     //%block="HuskyLens clear all custom texts on screen"
     //% weight=26
-    //% advanced=true
     export function clearOSD():void{
         writeAlgorithm(0x45, 0X35);
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
+
     /**
      * Photos and screenshots
      */
     //%block="HuskyLens take %request and save to SD card"
     //% weight=25
-    //% advanced=true
     export function takePhotoToSDCard(request:HUSKYLENSphoto):void{
         switch(request){
         case HUSKYLENSphoto.PHOTO:
@@ -606,12 +614,12 @@ export enum protocolAlgorithm {
         } 
         basic.pause(500)
     }
+
     /**
      * Save data model
      */
     //%block="HuskyLens %command current algorithm data as No. %data model of SD card"
     //% weight=24
-    //% advanced=true
     //% data.min=0 data.max=5
     export function saveModelToTFCard(command:HUSKYLENSMode,data:number):void{
        switch(command){
