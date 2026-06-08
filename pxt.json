@@ -14,7 +14,7 @@
         "test.microbit.ts": "target:microbit || target:calliopemini"
     },
     "targetVersions": {
-        "target": "8.0.17",
+        "target": "8.0.22",
         "targetId": "microbit"
     },
     "supportedTargets": [
