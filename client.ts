@@ -6,7 +6,7 @@ enum Content1 {
     //% block="width"
     width = 3,
     //% block="height"
-    height = 4
+    height = 4,
 }
 
 enum Content2 {
@@ -17,7 +17,7 @@ enum Content2 {
     //% block="X endpoint"
     xTarget = 3,
     //% block="Y endpoint"
-    yTarget = 4
+    yTarget = 4,
 }
 
 enum Content3 {
@@ -30,7 +30,7 @@ enum Content3 {
     //% block="width"
     width = 3,
     //% block="height"
-    height = 4
+    height = 4,
 }
 
 enum Content4 {
@@ -43,8 +43,7 @@ enum Content4 {
     //% block="X endpoint"
     xTarget = 3,
     //% block="Y endpoint"
-    yTarget = 4
-
+    yTarget = 4,
 }
 
 enum HUSKYLENSResultType_t {
@@ -61,7 +60,7 @@ let FIRST = {
     protocolSize: -1,
     algorithmType: -1,
     requestID: -1,
-};
+}
 
 enum HUSKYLENSMode {
     //%block="save"
@@ -73,7 +72,7 @@ enum HUSKYLENSphoto {
     //%block="photo"
     PHOTO,
     //%block="screenshot"
-    SCREENSHOT
+    SCREENSHOT,
 }
 
 //% weight=100  color=#e7660b icon="\uf083"  block="HuskyLens"
@@ -89,15 +88,14 @@ namespace modules {
         COMMAND_REQUEST_BLOCKS_BY_ID = 0x27,
         COMMAND_REQUEST_ARROWS_BY_ID = 0x28,
         COMMAND_RETURN_INFO = 0x29,
-        COMMAND_RETURN_BLOCK = 0x2A,
-        COMMAND_RETURN_ARROW = 0x2B,
-        COMMAND_REQUEST_KNOCK = 0x2C,
-        COMMAND_REQUEST_ALGORITHM = 0x2D,
-        COMMAND_RETURN_OK = 0x2E,
-        COMMAND_REQUEST_LEARN = 0x2F,
+        COMMAND_RETURN_BLOCK = 0x2a,
+        COMMAND_RETURN_ARROW = 0x2b,
+        COMMAND_REQUEST_KNOCK = 0x2c,
+        COMMAND_REQUEST_ALGORITHM = 0x2d,
+        COMMAND_RETURN_OK = 0x2e,
+        COMMAND_REQUEST_LEARN = 0x2f,
         COMMAND_REQUEST_FORGET = 0x30,
         COMMAND_REQUEST_SENSOR = 0x31,
-
     }
 
     export enum protocolAlgorithm {
@@ -119,14 +117,23 @@ namespace modules {
         QRRECOGMITION,
         //%block="Barcode Recognition (EDU only)"
         BARCODERECOGNITION,
-
     }
 
-
-    const HUSKYLENS_I2C_ADDR = 0x32              // i2c address
-    let protocolPtr: number[][] = [[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]]
+    const HUSKYLENS_I2C_ADDR = 0x32 // i2c address
+    let protocolPtr: number[][] = [
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+        [0],
+    ]
     let Protocol_t: number[] = [0, 0, 0, 0, 0, 0]
-    let i = 1;
+    let i = 1
     let FRAME_BUFFER_SIZE = 128
     let HEADER_0_INDEX = 0
     let HEADER_1_INDEX = 1
@@ -135,26 +142,25 @@ namespace modules {
     let COMMAND_INDEX = 4
     let CONTENT_INDEX = 5
     let PROTOCOL_SIZE = 6
-    let send_index = 0;
-    let receive_index = 0;
+    let send_index = 0
+    let receive_index = 0
 
-    let COMMAND_REQUEST = 0x20;
+    let COMMAND_REQUEST = 0x20
 
-    let receive_buffer: number[] = [];
-    let send_buffer: number[] = [];
-    let buffer: number[] = [];
+    let receive_buffer: number[] = []
+    let send_buffer: number[] = []
+    let buffer: number[] = []
 
-    let send_fail = false;
-    let receive_fail = false;
-    let content_current = 0;
-    let content_end = 0;
-    let content_read_end = false;
+    let send_fail = false
+    let receive_fail = false
+    let content_current = 0
+    let content_end = 0
+    let content_read_end = false
 
     let command: number
     let content: number
 
-    let deviceAddress = 0;
-
+    let deviceAddress = 0
 
     /**
      * HuskyLens init I2C until success
@@ -162,7 +168,7 @@ namespace modules {
     //%block="HuskyLens initialize I2C until success"
     //% weight=90
     export function initI2c(): void {
-        deviceAddress = HUSKYLENS_I2C_ADDR;
+        deviceAddress = HUSKYLENS_I2C_ADDR
         while (!readKnock());
     }
     /**
@@ -182,7 +188,7 @@ namespace modules {
     //% weight=80
     export function request(): void {
         protocolWriteCommand(protocolCommand.COMMAND_REQUEST)
-        processReturn();
+        processReturn()
     }
     /**
      * HuskyLens get the number of the learned ID from result.
@@ -190,7 +196,7 @@ namespace modules {
     //%block="HuskyLens get a total number of learned IDs from the result"
     //% weight=79
     export function getIds(): number {
-        return Protocol_t[2];
+        return Protocol_t[2]
     }
     /**
      * The box or arrow HuskyLens got from result appears in screen?
@@ -200,11 +206,11 @@ namespace modules {
     export function isAppear_s(Ht: HUSKYLENSResultType_t): boolean {
         switch (Ht) {
             case 1:
-                return countBlocks_s() != 0 ? true : false;
+                return countBlocks_s() != 0 ? true : false
             case 2:
-                return countArrows_s() != 0 ? true : false;
+                return countArrows_s() != 0 ? true : false
             default:
-                return false;
+                return false
         }
     }
     /**
@@ -214,23 +220,26 @@ namespace modules {
     //% weight=77
     export function readBox_s(data: Content3): number {
         let hk_x
-        let hk_y = readBlockCenterParameterDirect();
+        let hk_y = readBlockCenterParameterDirect()
         if (hk_y != -1) {
             switch (data) {
                 case 1:
-                    hk_x = protocolPtr[hk_y][1]; break;
+                    hk_x = protocolPtr[hk_y][1]
+                    break
                 case 2:
-                    hk_x = protocolPtr[hk_y][2]; break;
+                    hk_x = protocolPtr[hk_y][2]
+                    break
                 case 3:
-                    hk_x = protocolPtr[hk_y][3]; break;
+                    hk_x = protocolPtr[hk_y][3]
+                    break
                 case 4:
-                    hk_x = protocolPtr[hk_y][4]; break;
+                    hk_x = protocolPtr[hk_y][4]
+                    break
                 default:
-                    hk_x = protocolPtr[hk_y][5];
+                    hk_x = protocolPtr[hk_y][5]
             }
-        }
-        else hk_x = -1
-        return hk_x;
+        } else hk_x = -1
+        return hk_x
     }
     /**
      * HuskyLens get the parameter of arrow near the screen center from result.
@@ -243,18 +252,22 @@ namespace modules {
         if (hk_y != -1) {
             switch (data) {
                 case 1:
-                    hk_x = protocolPtr[hk_y][1]; break;
+                    hk_x = protocolPtr[hk_y][1]
+                    break
                 case 2:
-                    hk_x = protocolPtr[hk_y][2]; break;
+                    hk_x = protocolPtr[hk_y][2]
+                    break
                 case 3:
-                    hk_x = protocolPtr[hk_y][3]; break;
+                    hk_x = protocolPtr[hk_y][3]
+                    break
                 case 4:
-                    hk_x = protocolPtr[hk_y][4]; break;
+                    hk_x = protocolPtr[hk_y][4]
+                    break
                 default:
-                    hk_x = protocolPtr[hk_y][5];
+                    hk_x = protocolPtr[hk_y][5]
             }
         } else hk_x = -1
-        return hk_x;
+        return hk_x
     }
     /**
      * The ID Huskylens got from result has been learned before?
@@ -263,9 +276,9 @@ namespace modules {
     //% block="HuskyLens check if ID %id is learned from the result"
     //% weight=76
     export function isLearned(id: number): boolean {
-        let hk_x = countLearnedIDs();
-        if (id <= hk_x) return true;
-        return false;
+        let hk_x = countLearnedIDs()
+        if (id <= hk_x) return true
+        return false
     }
     /**
      * The box or arrow corresponding to ID obtained by HuskyLens from result appears in screen？
@@ -276,11 +289,11 @@ namespace modules {
     export function isAppear(id: number, Ht: HUSKYLENSResultType_t): boolean {
         switch (Ht) {
             case 1:
-                return countBlocks(id) != 0 ? true : false;
+                return countBlocks(id) != 0 ? true : false
             case 2:
-                return countArrows(id) != 0 ? true : false;
+                return countArrows(id) != 0 ? true : false
             default:
-                return false;
+                return false
         }
     }
     /**
@@ -290,60 +303,63 @@ namespace modules {
     //%block="HuskyLens get  $number1 of ID $id frame from the result"
     //% weight=65
     export function readeBox(id: number, number1: Content1): number {
-        let hk_y = cycle_block(id, 1);
+        let hk_y = cycle_block(id, 1)
         let hk_x
         if (countBlocks(id) != 0) {
             if (hk_y != null) {
                 switch (number1) {
                     case 1:
-                        hk_x = protocolPtr[hk_y][1]; break;
+                        hk_x = protocolPtr[hk_y][1]
+                        break
                     case 2:
-                        hk_x = protocolPtr[hk_y][2]; break;
+                        hk_x = protocolPtr[hk_y][2]
+                        break
                     case 3:
-                        hk_x = protocolPtr[hk_y][3]; break;
+                        hk_x = protocolPtr[hk_y][3]
+                        break
                     case 4:
-                        hk_x = protocolPtr[hk_y][4]; break;
+                        hk_x = protocolPtr[hk_y][4]
+                        break
                 }
-            }
-            else hk_x = -1;
-        }
-        else hk_x = -1;
-        return hk_x;
+            } else hk_x = -1
+        } else hk_x = -1
+        return hk_x
     }
     /**
-    * HuskyLens get the parameter of the arrow corresponding to ID from result.
-    * @param id to id ,eg: 1
-    */
+     * HuskyLens get the parameter of the arrow corresponding to ID from result.
+     * @param id to id ,eg: 1
+     */
 
     //%block="HuskyLens get $number1 of ID $id arrow from the result"
     //% weight=60
     export function readeArrow(id: number, number1: Content2): number {
-        let hk_y = cycle_arrow(id, 1);
+        let hk_y = cycle_arrow(id, 1)
         let hk_x
         if (countArrows(id) != 0) {
             if (hk_y != null) {
-
                 switch (number1) {
                     case 1:
-                        hk_x = protocolPtr[hk_y][1]; break;
+                        hk_x = protocolPtr[hk_y][1]
+                        break
                     case 2:
-                        hk_x = protocolPtr[hk_y][2]; break;
+                        hk_x = protocolPtr[hk_y][2]
+                        break
                     case 3:
-                        hk_x = protocolPtr[hk_y][3]; break;
+                        hk_x = protocolPtr[hk_y][3]
+                        break
                     case 4:
-                        hk_x = protocolPtr[hk_y][4]; break;
+                        hk_x = protocolPtr[hk_y][4]
+                        break
                     default:
-                        hk_x = -1;
+                        hk_x = -1
                 }
-            }
-            else hk_x = -1;
-        }
-        else hk_x = -1;
-        return hk_x;
+            } else hk_x = -1
+        } else hk_x = -1
+        return hk_x
     }
     /**
      * HuskyLens get the box or arrow total number from result.
-     * 
+     *
      */
     //%block="HuskyLens get a total number of %Ht total from the result"
     //% weight=90
@@ -351,11 +367,11 @@ namespace modules {
     export function getBox(Ht: HUSKYLENSResultType_t): number {
         switch (Ht) {
             case 1:
-                return countBlocks_s();
+                return countBlocks_s()
             case 2:
-                return countArrows_s();
+                return countArrows_s()
             default:
-                return 0;
+                return 0
         }
     }
     /**
@@ -371,24 +387,27 @@ namespace modules {
         if (protocolPtr[hk_i][0] == protocolCommand.COMMAND_RETURN_BLOCK) {
             switch (data) {
                 case 1:
-                    hk_x = protocolPtr[hk_i][1]; break;
+                    hk_x = protocolPtr[hk_i][1]
+                    break
                 case 2:
-                    hk_x = protocolPtr[hk_i][2]; break;
+                    hk_x = protocolPtr[hk_i][2]
+                    break
                 case 3:
-                    hk_x = protocolPtr[hk_i][3]; break;
+                    hk_x = protocolPtr[hk_i][3]
+                    break
                 case 4:
-                    hk_x = protocolPtr[hk_i][4]; break;
+                    hk_x = protocolPtr[hk_i][4]
+                    break
                 default:
-                    hk_x = protocolPtr[hk_i][5];
+                    hk_x = protocolPtr[hk_i][5]
             }
-        } else hk_x = -1;
-        return hk_x;
-
+        } else hk_x = -1
+        return hk_x
     }
     /**
      * HuskyLens get the parameter of the Nth arrow from result.
      * @param index to index ,eg: 1
-    */
+     */
     //% block="HuskyLens get $data of the No. $index arrow from the result"
     //% weight=60
     //% advanced=true
@@ -398,19 +417,23 @@ namespace modules {
         if (protocolPtr[hk_i][0] == protocolCommand.COMMAND_RETURN_ARROW) {
             switch (data) {
                 case 1:
-                    hk_x = protocolPtr[hk_i][1]; break;
+                    hk_x = protocolPtr[hk_i][1]
+                    break
                 case 2:
-                    hk_x = protocolPtr[hk_i][2]; break;
+                    hk_x = protocolPtr[hk_i][2]
+                    break
                 case 3:
-                    hk_x = protocolPtr[hk_i][3]; break;
+                    hk_x = protocolPtr[hk_i][3]
+                    break
                 case 4:
-                    hk_x = protocolPtr[hk_i][4]; break;
+                    hk_x = protocolPtr[hk_i][4]
+                    break
                 default:
-                    hk_x = protocolPtr[hk_i][5];
+                    hk_x = protocolPtr[hk_i][5]
             }
-        } else hk_x = -1;
+        } else hk_x = -1
         //protocolPtr[hk_i][0] = 0;
-        return hk_x;
+        return hk_x
     }
     /**
      * HuskyLens get the total number of box or arrow from result.
@@ -422,11 +445,11 @@ namespace modules {
     export function getBox_S(id: number, Ht: HUSKYLENSResultType_t): number {
         switch (Ht) {
             case 1:
-                return countBlocks(id);
+                return countBlocks(id)
             case 2:
-                return countArrows(id);
+                return countArrows(id)
             default:
-                return 0;
+                return 0
         }
     }
     /**
@@ -437,28 +460,34 @@ namespace modules {
     //%block="HuskyLens get $number1 of the ID $id  No. $index frame from the result"
     //% weight=45
     //% advanced=true
-    export function readeBox_index(id: number, index: number, number1: Content1): number {
-        let hk_y = cycle_block(id, index);
+    export function readeBox_index(
+        id: number,
+        index: number,
+        number1: Content1,
+    ): number {
+        let hk_y = cycle_block(id, index)
         let hk_x
         if (countBlocks(id) != 0) {
             if (hk_y != null) {
                 switch (number1) {
                     case 1:
-                        hk_x = protocolPtr[hk_y][1]; break;
+                        hk_x = protocolPtr[hk_y][1]
+                        break
                     case 2:
-                        hk_x = protocolPtr[hk_y][2]; break;
+                        hk_x = protocolPtr[hk_y][2]
+                        break
                     case 3:
-                        hk_x = protocolPtr[hk_y][3]; break;
+                        hk_x = protocolPtr[hk_y][3]
+                        break
                     case 4:
-                        hk_x = protocolPtr[hk_y][4]; break;
+                        hk_x = protocolPtr[hk_y][4]
+                        break
                     default:
-                        hk_x = -1;
+                        hk_x = -1
                 }
-            }
-            else hk_x = -1;
-        }
-        else hk_x = -1;
-        return hk_x;
+            } else hk_x = -1
+        } else hk_x = -1
+        return hk_x
     }
     /**
      * HuskyLens get the parameter of the Nth arrow corresponding to ID from result.
@@ -468,28 +497,34 @@ namespace modules {
     //%block="HuskyLens get $number1 of the ID $id No. $index arrow from the result"
     //% weight=35
     //% advanced=true
-    export function readeArrow_index(id: number, index: number, number1: Content2): number {
-        let hk_y = cycle_arrow(id, index);
+    export function readeArrow_index(
+        id: number,
+        index: number,
+        number1: Content2,
+    ): number {
+        let hk_y = cycle_arrow(id, index)
         let hk_x
         if (countArrows(id) != 0) {
             if (hk_y != null) {
                 switch (number1) {
                     case 1:
-                        hk_x = protocolPtr[hk_y][1]; break;
+                        hk_x = protocolPtr[hk_y][1]
+                        break
                     case 2:
-                        hk_x = protocolPtr[hk_y][2]; break;
+                        hk_x = protocolPtr[hk_y][2]
+                        break
                     case 3:
-                        hk_x = protocolPtr[hk_y][3]; break;
+                        hk_x = protocolPtr[hk_y][3]
+                        break
                     case 4:
-                        hk_x = protocolPtr[hk_y][4]; break;
+                        hk_x = protocolPtr[hk_y][4]
+                        break
                     default:
-                        hk_x = -1;
+                        hk_x = -1
                 }
-            }
-            else hk_x = -1;
-        }
-        else hk_x = -1;
-        return hk_x;
+            } else hk_x = -1
+        } else hk_x = -1
+        return hk_x
     }
     /**
      * Huskylens automatic learning ID
@@ -499,7 +534,7 @@ namespace modules {
     //% weight=30
     //% advanced=true
     export function writeLearn1(id: number): void {
-        writeAlgorithm(id, 0X36)
+        writeAlgorithm(id, 0x36)
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
     /**
@@ -509,7 +544,7 @@ namespace modules {
     //% weight=29
     //% advanced=true
     export function forgetLearn(): void {
-        writeAlgorithm(0x47, 0X37)
+        writeAlgorithm(0x47, 0x37)
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
     /**
@@ -522,21 +557,21 @@ namespace modules {
     //% advanced=true
     export function writeName(id: number, name: string): void {
         //do{
-        let newname = name;
-        let buffer = husky_lens_protocol_write_begin(0x2f);
-        send_buffer[send_index] = id;
-        send_buffer[send_index + 1] = (newname.length + 1) * 2;
-        send_index += 2;
+        let newname = name
+        let buffer = husky_lens_protocol_write_begin(0x2f)
+        send_buffer[send_index] = id
+        send_buffer[send_index + 1] = (newname.length + 1) * 2
+        send_index += 2
         for (let i = 0; i < newname.length; i++) {
-            send_buffer[send_index] = newname.charCodeAt(i);
+            send_buffer[send_index] = newname.charCodeAt(i)
             //serial.writeNumber(newname.charCodeAt(i))
-            send_index++;
+            send_index++
         }
-        send_buffer[send_index] = 0;
-        send_index += 1;
-        let length = husky_lens_protocol_write_end();
-        let Buffer = pins.createBufferFromArray(buffer);
-        protocolWrite(Buffer);
+        send_buffer[send_index] = 0
+        send_index += 1
+        let length = husky_lens_protocol_write_end()
+        let Buffer = pins.createBufferFromArray(buffer)
+        protocolWrite(Buffer)
         //}while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
     /**
@@ -552,26 +587,26 @@ namespace modules {
     //% y.min=0 y.max=210
     export function writeOSD(name: string, x: number, y: number): void {
         //do{
-        let buffer = husky_lens_protocol_write_begin(0x34);
-        send_buffer[send_index] = name.length;
+        let buffer = husky_lens_protocol_write_begin(0x34)
+        send_buffer[send_index] = name.length
         if (x > 255) {
-            send_buffer[send_index + 2] = (x % 255);
-            send_buffer[send_index + 1] = 0xff;
+            send_buffer[send_index + 2] = x % 255
+            send_buffer[send_index + 1] = 0xff
         } else {
-            send_buffer[send_index + 1] = 0;
-            send_buffer[send_index + 2] = x;
+            send_buffer[send_index + 1] = 0
+            send_buffer[send_index + 2] = x
         }
-        send_buffer[send_index + 3] = y;
-        send_index += 4;
+        send_buffer[send_index + 3] = y
+        send_index += 4
         for (let i = 0; i < name.length; i++) {
-            send_buffer[send_index] = name.charCodeAt(i);
+            send_buffer[send_index] = name.charCodeAt(i)
             //serial.writeNumber(name.charCodeAt(i));
-            send_index++;
+            send_index++
         }
-        let length = husky_lens_protocol_write_end();
+        let length = husky_lens_protocol_write_end()
         //serial.writeNumber(length)
-        let Buffer = pins.createBufferFromArray(buffer);
-        protocolWrite(Buffer);
+        let Buffer = pins.createBufferFromArray(buffer)
+        protocolWrite(Buffer)
         //}while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
     /**
@@ -581,7 +616,7 @@ namespace modules {
     //% weight=26
     //% advanced=true
     export function clearOSD(): void {
-        writeAlgorithm(0x45, 0X35);
+        writeAlgorithm(0x45, 0x35)
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
     }
     /**
@@ -593,15 +628,15 @@ namespace modules {
     export function takePhotoToSDCard(request: HUSKYLENSphoto): void {
         switch (request) {
             case HUSKYLENSphoto.PHOTO:
-                writeAlgorithm(0x40, 0X30)
+                writeAlgorithm(0x40, 0x30)
                 //while(!wait(protocolCommand.COMMAND_RETURN_OK))
-                break;
+                break
             case HUSKYLENSphoto.SCREENSHOT:
-                writeAlgorithm(0x49, 0X39)
+                writeAlgorithm(0x49, 0x39)
                 //while(!wait(protocolCommand.COMMAND_RETURN_OK));
-                break;
+                break
             default:
-                writeAlgorithm(0x40, 0X30)
+                writeAlgorithm(0x40, 0x30)
             //while(!wait(protocolCommand.COMMAND_RETURN_OK));
         }
         basic.pause(500)
@@ -613,60 +648,66 @@ namespace modules {
     //% weight=24
     //% advanced=true
     //% data.min=0 data.max=5
-    export function saveModelToTFCard(command: HUSKYLENSMode, data: number): void {
+    export function saveModelToTFCard(
+        command: HUSKYLENSMode,
+        data: number,
+    ): void {
         switch (command) {
             case HUSKYLENSMode.SAVE:
-                writeAlgorithm(data, 0x32);
+                writeAlgorithm(data, 0x32)
                 //while(!wait(protocolCommand.COMMAND_RETURN_OK));
-                break;
+                break
             case HUSKYLENSMode.LOAD:
-                writeAlgorithm(data, 0x33);
+                writeAlgorithm(data, 0x33)
                 //while(!wait(protocolCommand.COMMAND_RETURN_OK));
-                break;
+                break
             default:
-                writeAlgorithm(data, 0x32);
+                writeAlgorithm(data, 0x32)
             //while(!wait(protocolCommand.COMMAND_RETURN_OK));
         }
         basic.pause(500)
     }
 
     function validateCheckSum() {
-
-        let stackSumIndex = receive_buffer[3] + CONTENT_INDEX;
-        let hk_sum = 0;
+        let stackSumIndex = receive_buffer[3] + CONTENT_INDEX
+        let hk_sum = 0
         for (let i = 0; i < stackSumIndex; i++) {
-            hk_sum += receive_buffer[i];
+            hk_sum += receive_buffer[i]
         }
-        hk_sum = hk_sum & 0xff;
+        hk_sum = hk_sum & 0xff
 
-        return (hk_sum == receive_buffer[stackSumIndex]);
+        return hk_sum == receive_buffer[stackSumIndex]
     }
 
     function husky_lens_protocol_write_end() {
-        if (send_fail) { return 0; }
-        if (send_index + 1 >= FRAME_BUFFER_SIZE) { return 0; }
-        send_buffer[CONTENT_SIZE_INDEX] = send_index - CONTENT_INDEX;
+        if (send_fail) {
+            return 0
+        }
+        if (send_index + 1 >= FRAME_BUFFER_SIZE) {
+            return 0
+        }
+        send_buffer[CONTENT_SIZE_INDEX] = send_index - CONTENT_INDEX
         //serial.writeValue("618", send_buffer[CONTENT_SIZE_INDEX])
-        let hk_sum = 0;
+        let hk_sum = 0
         for (let i = 0; i < send_index; i++) {
-            hk_sum += send_buffer[i];
+            hk_sum += send_buffer[i]
         }
 
-        hk_sum = hk_sum & 0xff;
-        send_buffer[send_index] = hk_sum;
-        send_index++;
-        return send_index;
+        hk_sum = hk_sum & 0xff
+        send_buffer[send_index] = hk_sum
+        send_index++
+        return send_index
     }
 
     function husky_lens_protocol_write_begin(command = 0) {
-        send_fail = false;
-        send_buffer[HEADER_0_INDEX] = 0x55;
-        send_buffer[HEADER_1_INDEX] = 0xAA;
-        send_buffer[ADDRESS_INDEX] = 0x11;
+        send_fail = false
+        send_buffer[HEADER_0_INDEX] = 0x55
+        send_buffer[HEADER_1_INDEX] = 0xaa
+        send_buffer[ADDRESS_INDEX] = 0x11
         //send_buffer[CONTENT_SIZE_INDEX] = datalen;
-        send_buffer[COMMAND_INDEX] = command;
-        send_index = CONTENT_INDEX;
-        return send_buffer;
+        send_buffer[COMMAND_INDEX] = command
+        send_index = CONTENT_INDEX
+        return send_buffer
     }
 
     function protocolWrite(buffer: Buffer) {
@@ -676,164 +717,186 @@ namespace modules {
     }
 
     function processReturn() {
-        if (!wait(protocolCommand.COMMAND_RETURN_INFO)) return false;
-        protocolReadFiveInt16(protocolCommand.COMMAND_RETURN_INFO);
+        if (!wait(protocolCommand.COMMAND_RETURN_INFO)) return false
+        protocolReadFiveInt16(protocolCommand.COMMAND_RETURN_INFO)
         for (let i = 0; i < Protocol_t[1]; i++) {
-
-            if (!wait()) return false;
-            if (protocolReadFiveInt161(i, protocolCommand.COMMAND_RETURN_BLOCK)) continue;
-            else if (protocolReadFiveInt161(i, protocolCommand.COMMAND_RETURN_ARROW)) continue;
-            else return false;
+            if (!wait()) return false
+            if (protocolReadFiveInt161(i, protocolCommand.COMMAND_RETURN_BLOCK))
+                continue
+            else if (
+                protocolReadFiveInt161(i, protocolCommand.COMMAND_RETURN_ARROW)
+            )
+                continue
+            else return false
         }
-        return true;
+        return true
     }
 
     function wait(command = 0) {
-        timerBegin();
+        timerBegin()
         while (!timerAvailable()) {
             if (protocolAvailable()) {
                 if (command) {
                     if (husky_lens_protocol_read_begin(command)) {
                         //serial.writeNumber(0);
-                        return true;
+                        return true
                     }
-                }
-                else {
-                    return true;
+                } else {
+                    return true
                 }
             } else {
-                return false;
+                return false
             }
         }
-        return false;
+        return false
     }
 
     function husky_lens_protocol_read_begin(command = 0) {
         if (command == receive_buffer[COMMAND_INDEX]) {
-            content_current = CONTENT_INDEX;
-            content_read_end = false;
-            receive_fail = false;
-            return true;
+            content_current = CONTENT_INDEX
+            content_read_end = false
+            receive_fail = false
+            return true
         }
-        return false;
+        return false
     }
 
-    let timeOutDuration = 100;
+    let timeOutDuration = 100
     let timeOutTimer: number
     function timerBegin() {
-        timeOutTimer = input.runningTime();
+        timeOutTimer = input.runningTime()
     }
 
     function timerAvailable() {
-        return (input.runningTime() - timeOutTimer > timeOutDuration);
+        return input.runningTime() - timeOutTimer > timeOutDuration
     }
 
     let m_i = 16
     function protocolAvailable() {
-        let buf = pins.createBuffer(16);
+        let buf = pins.createBuffer(16)
         if (m_i == 16) {
             // read-only I2C transaction: empty write_buf, num_read = 16
-            buf = modules.huskylens1.transactionI2C(deviceAddress, 16, Buffer.create(0));
-            m_i = 0;
+            buf = modules.huskylens1.transactionI2C(
+                deviceAddress,
+                16,
+                Buffer.create(0),
+            )
+            m_i = 0
         }
         if (buf) {
             for (let i = m_i; i < 16; i++) {
                 if (husky_lens_protocol_receive(buf[i])) {
-                    m_i++;
-                    return true;
+                    m_i++
+                    return true
                 }
-                m_i++;
+                m_i++
             }
         }
-        return false;
+        return false
     }
 
     function husky_lens_protocol_receive(data: number): boolean {
         switch (receive_index) {
             case HEADER_0_INDEX:
-                if (data != 0x55) { receive_index = 0; return false; }
-                receive_buffer[HEADER_0_INDEX] = 0x55;
-                break;
-            case HEADER_1_INDEX:
-                if (data != 0xAA) { receive_index = 0; return false; }
-                receive_buffer[HEADER_1_INDEX] = 0xAA;
-                break;
-            case ADDRESS_INDEX:
-                receive_buffer[ADDRESS_INDEX] = data;
-                break;
-            case CONTENT_SIZE_INDEX:
-                if (data >= FRAME_BUFFER_SIZE - PROTOCOL_SIZE) { receive_index = 0; return false; }
-                receive_buffer[CONTENT_SIZE_INDEX] = data;
-                break;
-            default:
-                receive_buffer[receive_index] = data;
-
-                if (receive_index == receive_buffer[CONTENT_SIZE_INDEX] + CONTENT_INDEX) {
-                    content_end = receive_index;
-                    receive_index = 0;
-                    return validateCheckSum();
-
+                if (data != 0x55) {
+                    receive_index = 0
+                    return false
                 }
-                break;
+                receive_buffer[HEADER_0_INDEX] = 0x55
+                break
+            case HEADER_1_INDEX:
+                if (data != 0xaa) {
+                    receive_index = 0
+                    return false
+                }
+                receive_buffer[HEADER_1_INDEX] = 0xaa
+                break
+            case ADDRESS_INDEX:
+                receive_buffer[ADDRESS_INDEX] = data
+                break
+            case CONTENT_SIZE_INDEX:
+                if (data >= FRAME_BUFFER_SIZE - PROTOCOL_SIZE) {
+                    receive_index = 0
+                    return false
+                }
+                receive_buffer[CONTENT_SIZE_INDEX] = data
+                break
+            default:
+                receive_buffer[receive_index] = data
+
+                if (
+                    receive_index ==
+                    receive_buffer[CONTENT_SIZE_INDEX] + CONTENT_INDEX
+                ) {
+                    content_end = receive_index
+                    receive_index = 0
+                    return validateCheckSum()
+                }
+                break
         }
-        receive_index++;
-        return false;
+        receive_index++
+        return false
     }
 
     function husky_lens_protocol_write_int16(content = 0) {
-
-        let x: number = ((content.toString()).length)
-        if (send_index + x >= FRAME_BUFFER_SIZE) { send_fail = true; return; }
-        send_buffer[send_index] = content & 0xff;
-        send_buffer[send_index + 1] = (content >> 8) & 0xff;
-        send_index += 2;
+        let x: number = content.toString().length
+        if (send_index + x >= FRAME_BUFFER_SIZE) {
+            send_fail = true
+            return
+        }
+        send_buffer[send_index] = content & 0xff
+        send_buffer[send_index + 1] = (content >> 8) & 0xff
+        send_index += 2
     }
 
     function protocolReadFiveInt16(command = 0) {
         if (husky_lens_protocol_read_begin(command)) {
-            Protocol_t[0] = command;
-            Protocol_t[1] = husky_lens_protocol_read_int16();
-            Protocol_t[2] = husky_lens_protocol_read_int16();
-            Protocol_t[3] = husky_lens_protocol_read_int16();
-            Protocol_t[4] = husky_lens_protocol_read_int16();
-            Protocol_t[5] = husky_lens_protocol_read_int16();
-            husky_lens_protocol_read_end();
-            return true;
-        }
-        else {
-            return false;
+            Protocol_t[0] = command
+            Protocol_t[1] = husky_lens_protocol_read_int16()
+            Protocol_t[2] = husky_lens_protocol_read_int16()
+            Protocol_t[3] = husky_lens_protocol_read_int16()
+            Protocol_t[4] = husky_lens_protocol_read_int16()
+            Protocol_t[5] = husky_lens_protocol_read_int16()
+            husky_lens_protocol_read_end()
+            return true
+        } else {
+            return false
         }
     }
 
     function protocolReadFiveInt161(i: number, command = 0) {
         if (husky_lens_protocol_read_begin(command)) {
-            protocolPtr[i][0] = command;
-            protocolPtr[i][1] = husky_lens_protocol_read_int16();
-            protocolPtr[i][2] = husky_lens_protocol_read_int16();
-            protocolPtr[i][3] = husky_lens_protocol_read_int16();
-            protocolPtr[i][4] = husky_lens_protocol_read_int16();
-            protocolPtr[i][5] = husky_lens_protocol_read_int16();
-            husky_lens_protocol_read_end();
-            return true;
-        }
-        else {
-            return false;
+            protocolPtr[i][0] = command
+            protocolPtr[i][1] = husky_lens_protocol_read_int16()
+            protocolPtr[i][2] = husky_lens_protocol_read_int16()
+            protocolPtr[i][3] = husky_lens_protocol_read_int16()
+            protocolPtr[i][4] = husky_lens_protocol_read_int16()
+            protocolPtr[i][5] = husky_lens_protocol_read_int16()
+            husky_lens_protocol_read_end()
+            return true
+        } else {
+            return false
         }
     }
 
     function husky_lens_protocol_read_int16() {
-        if (content_current >= content_end || content_read_end) { receive_fail = true; return 0; }
-        let result = receive_buffer[content_current + 1] << 8 | receive_buffer[content_current];
+        if (content_current >= content_end || content_read_end) {
+            receive_fail = true
+            return 0
+        }
+        let result =
+            (receive_buffer[content_current + 1] << 8) |
+            receive_buffer[content_current]
         content_current += 2
-        return result;
+        return result
     }
 
     function husky_lens_protocol_read_end() {
         if (receive_fail) {
-            receive_fail = false;
-            return false;
+            receive_fail = false
+            return false
         }
-        return content_current == content_end;
+        return content_current == content_end
     }
 
     function countLearnedIDs() {
@@ -841,130 +904,150 @@ namespace modules {
     }
 
     function countBlocks(ID: number) {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK && protocolPtr[i][5] == ID) counter++;
+            if (
+                protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK &&
+                protocolPtr[i][5] == ID
+            )
+                counter++
         }
-        return counter;
+        return counter
     }
 
     function countBlocks_s() {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK) counter++;
+            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK)
+                counter++
         }
         //serial.writeNumber(counter)
-        return counter;
+        return counter
     }
 
     function countArrows(ID: number) {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW && protocolPtr[i][5] == ID) counter++;
+            if (
+                protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW &&
+                protocolPtr[i][5] == ID
+            )
+                counter++
         }
-        return counter;
+        return counter
     }
 
     function countArrows_s() {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW) counter++;
+            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW)
+                counter++
         }
-        return counter;
+        return counter
     }
 
     function readKnock() {
         for (let i = 0; i < 5; i++) {
-            protocolWriteCommand(protocolCommand.COMMAND_REQUEST_KNOCK);//I2C
+            protocolWriteCommand(protocolCommand.COMMAND_REQUEST_KNOCK) //I2C
             if (wait(protocolCommand.COMMAND_RETURN_OK)) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 
     function writeForget() {
         for (let i = 0; i < 5; i++) {
-            protocolWriteCommand(protocolCommand.COMMAND_REQUEST_FORGET);
+            protocolWriteCommand(protocolCommand.COMMAND_REQUEST_FORGET)
             if (wait(protocolCommand.COMMAND_RETURN_OK)) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 
     function protocolWriteCommand(command = 0) {
-        Protocol_t[0] = command;
-        let buffer = husky_lens_protocol_write_begin(Protocol_t[0]);
-        let length = husky_lens_protocol_write_end();
-        let Buffer = pins.createBufferFromArray(buffer);
-        protocolWrite(Buffer);
+        Protocol_t[0] = command
+        let buffer = husky_lens_protocol_write_begin(Protocol_t[0])
+        let length = husky_lens_protocol_write_end()
+        let Buffer = pins.createBufferFromArray(buffer)
+        protocolWrite(Buffer)
     }
 
     function protocolReadCommand(command = 0) {
         if (husky_lens_protocol_read_begin(command)) {
-            Protocol_t[0] = command;
-            husky_lens_protocol_read_end();
-            return true;
-        }
-        else {
-            return false;
+            Protocol_t[0] = command
+            husky_lens_protocol_read_end()
+            return true
+        } else {
+            return false
         }
     }
 
     function writeAlgorithm(algorithmType: number, comemand = 0) {
-        protocolWriteOneInt16(algorithmType, comemand);
+        protocolWriteOneInt16(algorithmType, comemand)
         //return true//wait(protocolCommand.COMMAND_RETURN_OK);
         //while(!wait(protocolCommand.COMMAND_RETURN_OK));
         //return true
     }
 
     function writeLearn(algorithmType: number) {
-        protocolWriteOneInt16(algorithmType, protocolCommand.COMMAND_REQUEST_LEARN);
-        return wait(protocolCommand.COMMAND_RETURN_OK);
+        protocolWriteOneInt16(
+            algorithmType,
+            protocolCommand.COMMAND_REQUEST_LEARN,
+        )
+        return wait(protocolCommand.COMMAND_RETURN_OK)
     }
 
     function protocolWriteOneInt16(algorithmType: number, command = 0) {
-        let buffer = husky_lens_protocol_write_begin(command);
-        husky_lens_protocol_write_int16(algorithmType);
-        let length = husky_lens_protocol_write_end();
-        let Buffer = pins.createBufferFromArray(buffer);
-        protocolWrite(Buffer);
+        let buffer = husky_lens_protocol_write_begin(command)
+        husky_lens_protocol_write_int16(algorithmType)
+        let length = husky_lens_protocol_write_end()
+        let Buffer = pins.createBufferFromArray(buffer)
+        protocolWrite(Buffer)
     }
 
     function cycle_block(ID: number, index = 1): number {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK && protocolPtr[i][5] == ID) {
-                counter++;
-                if (index == counter) return i;
-
+            if (
+                protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK &&
+                protocolPtr[i][5] == ID
+            ) {
+                counter++
+                if (index == counter) return i
             }
         }
-        return null;
+        return null
     }
 
     function cycle_arrow(ID: number, index = 1): number {
-        let counter = 0;
+        let counter = 0
         for (let i = 0; i < Protocol_t[1]; i++) {
-            if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW && protocolPtr[i][5] == ID) {
-                counter++;
-                if (index == counter) return i;
-
+            if (
+                protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW &&
+                protocolPtr[i][5] == ID
+            ) {
+                counter++
+                if (index == counter) return i
             }
         }
-        return null;
+        return null
     }
 
     function readBlockCenterParameterDirect(): number {
-        let distanceMinIndex = -1;
-        let distanceMin = 65535;
+        let distanceMinIndex = -1
+        let distanceMin = 65535
         for (let i = 0; i < Protocol_t[1]; i++) {
             if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_BLOCK) {
-                let distance = Math.round(Math.sqrt(Math.abs(protocolPtr[i][1] - 320 / 2))) + Math.round(Math.sqrt(Math.abs(protocolPtr[i][2] - 240 / 2)));
+                let distance =
+                    Math.round(
+                        Math.sqrt(Math.abs(protocolPtr[i][1] - 320 / 2)),
+                    ) +
+                    Math.round(Math.sqrt(Math.abs(protocolPtr[i][2] - 240 / 2)))
                 if (distance < distanceMin) {
-                    distanceMin = distance;
-                    distanceMinIndex = i;
+                    distanceMin = distance
+                    distanceMinIndex = i
                 }
             }
         }
@@ -972,14 +1055,18 @@ namespace modules {
     }
 
     function readArrowCenterParameterDirect(): number {
-        let distanceMinIndex = -1;
-        let distanceMin = 65535;
+        let distanceMinIndex = -1
+        let distanceMin = 65535
         for (let i = 0; i < Protocol_t[1]; i++) {
             if (protocolPtr[i][0] == protocolCommand.COMMAND_RETURN_ARROW) {
-                let distance = Math.round(Math.sqrt(Math.abs(protocolPtr[i][1] - 320 / 2))) + Math.round(Math.sqrt(Math.abs(protocolPtr[i][2] - 240 / 2)));
+                let distance =
+                    Math.round(
+                        Math.sqrt(Math.abs(protocolPtr[i][1] - 320 / 2)),
+                    ) +
+                    Math.round(Math.sqrt(Math.abs(protocolPtr[i][2] - 240 / 2)))
                 if (distance < distanceMin) {
-                    distanceMin = distance;
-                    distanceMinIndex = i;
+                    distanceMin = distance
+                    distanceMinIndex = i
                 }
             }
         }
@@ -987,17 +1074,16 @@ namespace modules {
     }
 
     function no(): void {
-        basic.showIcon(IconNames.No);
-        basic.pause(100);
-        basic.clearScreen();
-        basic.pause(100);
+        basic.showIcon(IconNames.No)
+        basic.pause(100)
+        basic.clearScreen()
+        basic.pause(100)
     }
     function yes(): void {
-        basic.showIcon(IconNames.Yes);
-        basic.pause(100);
-        basic.clearScreen();
+        basic.showIcon(IconNames.Yes)
+        basic.pause(100)
+        basic.clearScreen()
     }
-
 
     export class HuskylensClient extends jacdac.Client {
         constructor(role: string) {
@@ -1013,7 +1099,8 @@ namespace modules {
             let out = ""
             for (let i = 0; i < buf.length; i++) {
                 const b = buf[i] & 0xff
-                out += (i ? " " : "") + "0x" + hex[(b >> 4) & 0x0f] + hex[b & 0x0f]
+                out +=
+                    (i ? " " : "") + "0x" + hex[(b >> 4) & 0x0f] + hex[b & 0x0f]
             }
             return out
         }
@@ -1021,13 +1108,19 @@ namespace modules {
         public handlePacket(pkt: jacdac.JDPacket) {
             if (
                 pkt.isReport &&
-                pkt.serviceCommand === jacdac.FwdI2CTransactionCmd.Transaction &&
-                (this.serviceIndex == null || pkt.serviceIndex === this.serviceIndex)
+                pkt.serviceCommand ===
+                    jacdac.FwdI2CTransactionCmd.Transaction &&
+                (this.serviceIndex == null ||
+                    pkt.serviceIndex === this.serviceIndex)
             ) {
                 // report: [status: u8][read_buf: bytes...]
                 const data = pkt.data
-                this._lastStatus = (data && data.length) ? (data[0] as jacdac.Status) : jacdac.Status.OK
-                this._rx = (data && data.length > 1) ? data.slice(1) : Buffer.create(0)
+                this._lastStatus =
+                    data && data.length
+                        ? (data[0] as jacdac.Status)
+                        : jacdac.Status.OK
+                this._rx =
+                    data && data.length > 1 ? data.slice(1) : Buffer.create(0)
             }
         }
 
@@ -1036,7 +1129,11 @@ namespace modules {
          * cmd payload: [address: u8][num_read: u8][write_buf: bytes...]
          * report:      [status: u8][read_buf: bytes...]
          */
-        transactionI2C(i2caddr: number, numRead: number, writeBuf: Buffer): Buffer {
+        transactionI2C(
+            i2caddr: number,
+            numRead: number,
+            writeBuf: Buffer,
+        ): Buffer {
             this._rx = null
             this._lastStatus = jacdac.Status.OK
 
@@ -1044,8 +1141,8 @@ namespace modules {
                 jacdac.FwdI2CTransactionCmd.Transaction,
                 jacdac.jdpack(
                     jacdac.FwdI2CTransactionCmdPack.Transaction, // "u8 u8 b"
-                    [i2caddr & 0xff, numRead & 0xff, writeBuf]
-                )
+                    [i2caddr & 0xff, numRead & 0xff, writeBuf],
+                ),
             )
 
             this.sendCommand(pkt)
@@ -1065,11 +1162,6 @@ namespace modules {
         }
     }
 
-
-
-
-
     //% fixedInstance whenUsed weight=1 block="huskylens1"
     export const huskylens1 = new HuskylensClient("huskylens1")
-
 }
