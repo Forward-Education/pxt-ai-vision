@@ -5,11 +5,10 @@
     "license": "MIT",
     "dependencies": {
         "core": "*",
-        "jacdac": "github:jacdac/pxt-jacdac#v1.9.40"
+        "jacdac": "github:jacdac/pxt-jacdac#v1.9.40",
+        "fwd-ai-vision": "github:Forward-Education/pxt-fwd-modules/fwd-ai-vision#v1.1.1"
     },
     "files": [
-        "client.ts",
-        "constants.ts",
         "README.md"
     ],
     "targetVersions": {
