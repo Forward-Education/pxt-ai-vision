@@ -4,12 +4,13 @@
     "description": "Forward Education's AI Vision Jacdac module extension, micro:bit V2 only.",
     "license": "MIT",
     "dependencies": {
-        "core": "*",
-        "jacdac": "github:jacdac/pxt-jacdac#v1.9.40",
         "fwd-ai-vision": "github:Forward-Education/pxt-fwd-modules/fwd-ai-vision#v1.1.1"
     },
     "files": [
         "README.md"
+    ],
+    "testFiles": [
+        "tests/test.ts"
     ],
     "targetVersions": {
         "target": "8.0.22",
