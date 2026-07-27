@@ -1,6 +1,6 @@
 {
     "name": "fwd-vision-ai-kit",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Forward Education's Vision AI Kit extension, micro:bit V2 only.",
     "license": "MIT",
     "dependencies": {
