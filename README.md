@@ -20,16 +20,16 @@ Train the micro:bit to recognize friendly faces. First the module is initialized
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
-    fwdAiVision.writeLearn1(1)
+    fwdAiVision.learnId(1)
 })
 input.onButtonPressed(Button.B, function () {
     fwdAiVision.forgetLearn()
 })
 fwdAiVision.initI2c()
-fwdAiVision.initMode(fwdAiVision.protocolAlgorithm.ALGORITHM_FACE_RECOGNITION)
+fwdAiVision.initMode(fwdAiVision.ProtocolAlgorithm.FaceRecognition)
 basic.forever(function () {
     fwdAiVision.request()
-    if (fwdAiVision.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
+    if (fwdAiVision.isIdOnScreen(1, fwdAiVision.ResultType.Frame)) {
         basic.showIcon(IconNames.Happy)
     } else {
         basic.showIcon(IconNames.Sad)
@@ -41,7 +41,7 @@ Train the micro:bit to recognize different faces. We have some of the same eleme
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
-    fwdAiVision.writeLearn1(faceID)
+    fwdAiVision.learnId(faceID)
     faceID += 1
 })
 input.onButtonPressed(Button.B, function () {
@@ -50,12 +50,14 @@ input.onButtonPressed(Button.B, function () {
 })
 let faceID = 0
 fwdAiVision.initI2c()
-fwdAiVision.initMode(fwdAiVision.protocolAlgorithm.ALGORITHM_FACE_RECOGNITION)
+fwdAiVision.initMode(fwdAiVision.ProtocolAlgorithm.FaceRecognition)
 faceID = 1
 basic.forever(function () {
     fwdAiVision.request()
-    if (fwdAiVision.isAppear_s(HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-        basic.showNumber(fwdAiVision.readBox_s(Content3.ID))
+    if (fwdAiVision.isOnScreen(fwdAiVision.ResultType.Frame)) {
+        basic.showNumber(
+            fwdAiVision.readClosestBox(fwdAiVision.BoxDataWithId.ID),
+        )
     } else {
         basic.clearScreen()
     }

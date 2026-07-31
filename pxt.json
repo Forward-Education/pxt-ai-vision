@@ -4,7 +4,7 @@
     "description": "Forward Education's Vision AI Kit extension, micro:bit V2 only.",
     "license": "MIT",
     "dependencies": {
-        "fwd-ai-vision": "github:Forward-Education/pxt-fwd-modules/fwd-ai-vision#v1.1.3"
+        "fwd-ai-vision": "github:Forward-Education/pxt-fwd-modules/fwd-ai-vision#v1.1.5"
     },
     "files": [
         "README.md",
